@@ -48,7 +48,7 @@ grayMap.addTo(myMap);
 
 // We create the layers for our two different sets of data, earthquakes and
 // tectonicplates.
-var tectonicPlates = new L.LayerGroup();
+// var tectonicPlates = new L.LayerGroup();
 var earthquakes = new L.LayerGroup();
 
 // Defining an object that contains all of our different map choices. Only one
@@ -67,7 +67,7 @@ var baseMaps = {
 // Create a overlays object for the two LayerGroups from above. 
 // The key should be a human readable name for the layer group, and the value should be a LayerGroup variable
 var overlayMaps = {
-  'Tectonic Plates': tectonicPlates,
+  // 'Tectonic Plates': tectonicPlates,
   Earthquakes: earthquakes
 };
 
@@ -80,8 +80,10 @@ L.control
 // .then() fire off an anonymous function that takes a single argument `data`.
 var queryUrl = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=2014-01-02&maxlongitude=-69.52148437&minlongitude=-123.83789062&maxlatitude=48.74894534&minlatitude=25.16517337";
 
-d3.json(queryUrl, function(data) {
+d3.json(queryUrl).then(function(data) {
   var earthquakeData = data.features;
+  console.log(earthquakeData)
+
 
   function color(depth) {
     switch(true) {
@@ -89,7 +91,7 @@ d3.json(queryUrl, function(data) {
       return '#9c0909';
     case depth > 80:
       return '#d43d0b';
-    case deppth > 60:
+    case depth > 60:
       return '#f09a05';
     case depth > 40:
       return '#f0d105';
@@ -101,7 +103,7 @@ d3.json(queryUrl, function(data) {
   L.geoJson(earthquakeData, {
     // use pointToLayer to convert each feature to an L.circleMarker, see https://geospatialresponse.wordpress.com/2015/07/26/leaflet-geojson-pointtolayer/ for a tutorial
       pointToLayer: function(feature, latlng) {
-        return L.CircleMarker(latlng, {
+        return L.circleMarker(latlng, {
           radius: 10, 
           fillOpacity: 0.85
         });
@@ -118,7 +120,7 @@ d3.json(queryUrl, function(data) {
         };
     },
     // use onEachFeature to bind a popup with the magnitude and location of the earthquake to the layer (see above tutorial for an example)
-    onEachFeature: function(feature, layer) { 
+      onEachFeature: function(feature, layer) { 
       layer.bindPopup("Magnitude: " + feature.properties.mag +
                        "<br> Location: "  + feature.properties.place);
     
